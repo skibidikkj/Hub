@@ -1,0 +1,220 @@
+-- Carregar a biblioteca Fluent e os gerenciadores
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
+
+-- Criar a janela principal
+local Window = Fluent:CreateWindow({
+    Title = "Adm Hub",
+    SubTitle = "Melhorando sua jogabilidade",
+    TabWidth = 160,
+    Size = UDim2.fromOffset(600, 500),
+    Acrylic = true,
+    Theme = "Dark",
+    MinimizeKey = Enum.KeyCode.LeftControl
+})
+
+-- Criar abas (Tabs)
+local Tabs = {
+    Main = Window:AddTab({ Title = "Main", Icon = "" }),
+    Utilities = Window:AddTab({ Title = "Utilities", Icon = "toolbox" }),
+    Exploits = Window:AddTab({ Title = "Exploits", Icon = "shield" }),
+    Player = Window:AddTab({ Title = "Player", Icon = "user" }),
+    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
+}
+
+-- Notificação inicial
+Fluent:Notify({
+    Title = "Adm Hub",
+    Content = "Script carregado com sucesso!",
+    Duration = 5
+})
+
+-- **EXPOLOITS TAB**
+-- **Invisibilidade**
+Tabs.Exploits:AddButton({
+    Title = "Tornar-se Invisível",
+    Description = "Faz seu personagem desaparecer",
+    Callback = function()
+        local char = game.Players.LocalPlayer.Character
+        if char then
+            for _, part in pairs(char:GetChildren()) do
+                if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" then
+                    part.Transparency = 1
+                    part.CanCollide = false
+                end
+            end
+        end
+    end
+})
+
+-- **No Clip (Atravessar paredes)**
+local NoClip = false
+Tabs.Exploits:AddToggle({
+    Title = "No Clip",
+    Description = "Ative para atravessar paredes",
+    Default = false,
+    Callback = function(state)
+        NoClip = state
+        while NoClip do
+            for _, part in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = false
+                end
+            end
+            wait()
+        end
+    end
+})
+
+-- **Respawn Instantâneo**
+Tabs.Exploits:AddButton({
+    Title = "Respawn Instantâneo",
+    Description = "Renasce automaticamente",
+    Callback = function()
+        game.Players.LocalPlayer.Character:BreakJoints()
+    end
+})
+
+-- **UTILITIES TAB**
+-- **Super Jump (Ajustar pulo)**
+Tabs.Utilities:AddSlider({
+    Title = "Super Jump",
+    Description = "Ajuste a altura do pulo",
+    Default = 50,
+    Min = 50,
+    Max = 500,
+    Callback = function(value)
+        game.Players.LocalPlayer.Character.Humanoid.JumpPower = value
+    end
+})
+
+-- **Velocidade Personalizada**
+Tabs.Utilities:AddSlider({
+    Title = "Velocidade",
+    Description = "Mude a velocidade do personagem",
+    Default = 16,
+    Min = 16,
+    Max = 300,
+    Callback = function(value)
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = value
+    end
+})
+
+-- **Destravar Câmera**
+Tabs.Utilities:AddButton({
+    Title = "Destravar Câmera",
+    Description = "Remove limites da câmera",
+    Callback = function()
+        game.Players.LocalPlayer.CameraMode = Enum.CameraMode.Classic
+    end
+})
+
+-- **Destravar Zoom Máximo**
+Tabs.Utilities:AddButton({
+    Title = "Zoom Ilimitado",
+    Description = "Permite dar zoom infinito",
+    Callback = function()
+        game.Players.LocalPlayer.CameraMaxZoomDistance = math.huge
+    end
+})
+
+-- **Remover Névoa (Fog Remover)**
+Tabs.Utilities:AddButton({
+    Title = "Remover Névoa",
+    Description = "Melhora a visibilidade no jogo",
+    Callback = function()
+        game.Lighting.FogEnd = 100000
+    end
+})
+
+-- **Remover Partes Invisíveis**
+Tabs.Utilities:AddButton({
+    Title = "Exibir Partes Invisíveis",
+    Description = "Revela objetos invisíveis no mapa",
+    Callback = function()
+        for _, v in pairs(workspace:GetDescendants()) do
+            if v:IsA("BasePart") and v.Transparency == 1 then
+                v.Transparency = 0.5
+            end
+        end
+    end
+})
+
+-- **Auto Collect (Coletar Moedas)**
+local AutoCollect = false
+Tabs.Utilities:AddToggle({
+    Title = "Auto Collect",
+    Description = "Coleta moedas automaticamente",
+    Default = false,
+    Callback = function(state)
+        AutoCollect = state
+        while AutoCollect do
+            for _, v in pairs(workspace:GetChildren()) do
+                if v:IsA("Part") and v.Name == "Coin" then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
+                    wait(0.5)
+                end
+            end
+        end
+    end
+})
+
+-- **PLAYER TAB**
+-- **Mudar Altura do Personagem**
+Tabs.Player:AddSlider({
+    Title = "Altura do Personagem",
+    Description = "Muda o tamanho do personagem",
+    Default = 1,
+    Min = 0.5,
+    Max = 5,
+    Callback = function(value)
+        game.Players.LocalPlayer.Character.Humanoid.BodyHeightScale.Value = value
+    end
+})
+
+-- **God Mode (Invencibilidade)**
+Tabs.Player:AddButton({
+    Title = "God Mode",
+    Description = "Torna-se imortal",
+    Callback = function()
+        local humanoid = game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
+        if humanoid then
+            humanoid.MaxHealth = math.huge
+            humanoid.Health = math.huge
+        end
+    end
+})
+
+-- **Remover Ragdoll**
+Tabs.Player:AddButton({
+    Title = "Remover Ragdoll",
+    Description = "Evita cair no chão",
+    Callback = function()
+        local char = game.Players.LocalPlayer.Character
+        if char then
+            for _, v in pairs(char:GetDescendants()) do
+                if v:IsA("Motor6D") and v.Name == "HumanoidRootPart" then
+                    v:Destroy()
+                end
+            end
+        end
+    end
+})
+
+-- Gerenciamento de Add-ons: SaveManager e InterfaceManager
+SaveManager:SetLibrary(Fluent)
+InterfaceManager:SetLibrary(Fluent)
+SaveManager:IgnoreThemeSettings() -- Ignora as configurações de tema
+SaveManager:SetIgnoreIndexes({}) -- Ignore índices específicos
+InterfaceManager:SetFolder("FluentScriptHub")
+SaveManager:SetFolder("FluentScriptHub/specific-game")
+InterfaceManager:BuildInterfaceSection(Tabs.Settings)
+SaveManager:BuildConfigSection(Tabs.Settings)
+
+-- Finalizar
+Window:SelectTab(1)
+Fluent:Notify({ Title = "Fluent", Content = "O Hub foi carregado.", Duration = 8 })
+
+-- Carregar configurações automaticamente, se disponíveis
+SaveManager:LoadAutoloadConfig()
