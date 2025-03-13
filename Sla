@@ -81,11 +81,29 @@ CreateToggle(Tabs.Admins, "Fates Admin", "https://raw.githubusercontent.com/fate
 CreateToggle(Tabs.Misc, "Mobile Keyboard", "https://raw.githubusercontent.com/advxzivhsjjdhxhsidifvsh/mobkeyboard/main/main.txt")
 CreateToggle(Tabs.Misc, "Rejoin Game", "https://pastebin.com/raw/YUqvvEAB")
 
+-- Adicionando o Slider de Velocidade na aba "Misc"
+Tabs.Misc:AddSlider("Velocidade", {
+    Title = "Velocidade",
+    Description = "Ajusta a velocidade do jogador",
+    Default = 16,   -- Valor padrão alterado para 16
+    Min = 16,       -- Mínimo valor alterado para 16
+    Max = 200,      -- Máximo valor alterado para 200
+    Rounding = 1,
+    Callback = function(Value)
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoid = character:WaitForChild("Humanoid")
+        
+        -- Define a velocidade de caminhada
+        humanoid.WalkSpeed = Value  -- O valor agora será diretamente aplicado
+    end
+})
+
 -- Credits Tab
 Tabs.Credits:AddParagraph("Criador", "SKIBIDIHUBKKJ")
 Tabs.Credits:AddParagraph("YouTube", "BLACK._TV")
 Tabs.Credits:AddParagraph("TikTok", "BLACK._TV")
 
 -- Finalizando
-Window:SelectTab(1)
+Window:SelectTab(1)  -- Selecionando a aba "Main"
 Fluent:Notify({ Title = "SKIBIDIHUBKKJ", Content = "O script foi carregado com sucesso!", Duration = 8 })
